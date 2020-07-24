@@ -6,6 +6,7 @@
 .pnp.js
 
 ./key.js
+key.js
 
 # testing
 /coverage
