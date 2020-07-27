@@ -33,12 +33,13 @@ class App extends Component {
     this.state = {
       input: '',
       imageURL: '',
-      box: {},
+      box: [],
       route: 'signin'
     }
   }
 
   calculateFaceLocation = (data) => {
+    console.log(data)
     const clarifaiface = data.outputs[0].data.regions;//[0].region_info.bounding_box;
     // const image = document.getElementById('inputimage');
     // const width = Number(image.width);
@@ -50,6 +51,7 @@ class App extends Component {
     //   rightCol: width - (clarifaiface.right_col * width),
     //   bottomRow: height - (clarifaiface.bottom_row * height)
     // }
+    console.log(clarifaiface)
     return clarifaiface;
   }
 
@@ -59,13 +61,37 @@ class App extends Component {
   }
 
   onInputChange= (event) => {
-    this.setState({imageURL: event.target.value})
+    console.log();
+    this.setState({imageURL: URL.createObjectURL(event.target.files[0])});
+
+    const filesSelected = document.getElementById("imageip").files;
+    if (filesSelected.length > 0) {
+      let fileToLoad = filesSelected[0];
+
+      let fileReader = new FileReader();
+
+      fileReader.onload = (fileLoadedEvent) => {
+        let srcData = fileLoadedEvent.target.result;
+        srcData = srcData.replace(/^data:image\/(png|jpg|jpeg);base64,/,"");
+        this.setState({input: srcData});
+        // console.log(this.state.input);
+      }
+      fileReader.readAsDataURL(fileToLoad);
+    }
   }
 
-  onSubmit=()=>{
-    app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.imageURL)
-    .then((response) => this.calculateFaceLocation(response))
-    .then(res => this.displayFaceBox(res))
+  onSubmit=()=>{    
+    const {displayFaceBox, calculateFaceLocation} = this;
+    // let canvas = document.createElement("canvas");
+    // const image = document.getElementById('inputimage');
+    // canvas.width = Number(image.width);
+    // canvas.height= Number(image.height);
+    // let ctx = canvas.getContext("2d");
+    // ctx.drawImage(image,0,0);
+    // let dataURL = canvas.toDataURL("image/jpg");
+    // let imageURL = dataURL.replace(/^data:image\/(png|jpg);base64,/,"");
+    app.models.predict(Clarifai.FACE_DETECT_MODEL,{base64:this.state.input})
+    .then((response) => displayFaceBox(calculateFaceLocation(response)))
     .catch(err => console.log(err));
   }
 

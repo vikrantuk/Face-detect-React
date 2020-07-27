@@ -5,7 +5,7 @@ const FaceRecognition = ({box,image}) =>{
     return(
         <div className="center ma">
             <div className="absolute mt2">
-                <img id="inputimage" alt="" src={image} width='500px' height='auto'/>
+                <img id="inputimage" alt="" src={image} style={{maxWidth:'70vw', width:'100%', height:'auto'}}/>
                 
                 <div>{ box.length ?
                     box.map((element,i) => {
