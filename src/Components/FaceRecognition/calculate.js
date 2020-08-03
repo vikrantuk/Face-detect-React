@@ -3,6 +3,7 @@ const data = (dim) =>{
     // console.log(dim);
     const clarifaiface = dim.bounding_box;
     const image = document.getElementById('inputimage');
+    // console.log(image);
     const width = Number(image.width);
     const height = Number(image.height);
     return{
